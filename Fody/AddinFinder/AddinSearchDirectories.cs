@@ -10,14 +10,16 @@ public partial class AddinFinder
     string solutionDirectory;
     string msBuildTaskDirectory;
     string nuGetPackageRoot;
+    string weaverPaths;
     List<string> packageDefinitions;
 
-    public AddinFinder(Action<string> log,string solutionDirectory,string msBuildTaskDirectory,string nuGetPackageRoot,List<string> packageDefinitions)
+    public AddinFinder(Action<string> log,string solutionDirectory,string msBuildTaskDirectory,string nuGetPackageRoot,List<string> packageDefinitions,string weaverPaths)
     {
         this.log = log;
         this.solutionDirectory = solutionDirectory;
         this.msBuildTaskDirectory = msBuildTaskDirectory;
         this.nuGetPackageRoot = nuGetPackageRoot;
+        this.weaverPaths = weaverPaths;
         this.packageDefinitions = packageDefinitions;
     }
 
@@ -33,6 +35,7 @@ public partial class AddinFinder
             AddFromMsBuildDirectory();
             AddToolsSolutionDirectoryToAddinSearch();
             AddNuGetPackageRootToAddinSearch();
+            AddWeaverPathsToAddinSearch();
         }
         else
         {
@@ -67,7 +70,26 @@ public partial class AddinFinder
         AddFiles(ScanDirectoryForPackages(nuGetPackageRoot));
     }
 
-    public static IEnumerable<string> ScanDirectoryForPackages(string directory)
+   void AddWeaverPathsToAddinSearch()
+   {
+      if( weaverPaths == null )
+      {
+         log( "  Skipped WeaverPaths since it is not defined." );
+         return;
+      }
+      var paths = weaverPaths.Split( ';' );
+      foreach( var path in paths )
+      {
+         if( !Directory.Exists( path ) )
+         {
+            log( $"   Skipped WeaverPath '{path}' since it doesn't exist." );
+         }
+         log( $"   Scanning WeaverPath '{path}'." );
+         AddFiles( DirectoryEx.EnumerateFilesEndsWith( path, ".Fody.dll", SearchOption.AllDirectories ) );
+      }
+   }
+
+   public static IEnumerable<string> ScanDirectoryForPackages(string directory)
     {
         return AddOldStyleDirectories(directory)
             .Concat(AddNewOrPaketStyleDirectories(directory).Where(x => x != null));

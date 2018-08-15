@@ -45,6 +45,8 @@ namespace Fody
 
         public string NuGetPackageRoot { get; set; }
 
+        public string WeaverPaths { get; set; }
+
         public string[] PackageDefinitions { get; set; }
 
         //TODO move back to DebugSymbols when it resolves to true in release mode
@@ -72,6 +74,7 @@ namespace Fody
                 ReferenceCopyLocalPaths = referenceCopyLocalPaths,
                 DefineConstants = defineConstants,
                 NuGetPackageRoot = NuGetPackageRoot,
+                WeaverPaths = WeaverPaths,
                 MSBuildDirectory = MSBuildThisFileDirectory,
                 PackageDefinitions = PackageDefinitions?.ToList(),
                 DebugSymbols = DebugSymbolsProduced()

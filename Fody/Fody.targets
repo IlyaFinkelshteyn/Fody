@@ -62,7 +62,6 @@
       Condition="Exists('@(IntermediateAssembly)') And $(DesignTimeBuild) != true And $(DisableFody) != true"
       Name="FodyTarget"
       DependsOnTargets="$(FodyDependsOnTargets)"
-      Inputs="@(IntermediateAssembly->'%(FullPath)');$(FodyKeyFilePath);$(ProjectWeaverXml)"
       Outputs="$(TargetPath)">
 
     <ItemGroup>
@@ -73,6 +72,7 @@
           IntermediateDir="$(ProjectDir)$(IntermediateOutputPath)"
           KeyFilePath="$(FodyKeyFilePath)"
           NuGetPackageRoot="$(NuGetPackageRoot)"
+          WeaverPaths="$(WeaverPaths)"
           ProjectDirectory="$(ProjectDir)"
           SolutionDir="$(FodySolutionDir)"
           References="@(ReferencePath)"
