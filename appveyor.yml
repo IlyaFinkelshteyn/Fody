@@ -4,7 +4,8 @@ build_script:
 - cmd: 
     dotnet build Fody.sln --configuration Release
 
-    dotnet build Integration\Integration.sln --configuration Release
+ #   dotnet build Integration\Integration.sln --configuration Release
+    msbuild Integration\Integration.sln /p:Configuration=Release /verbosity:minimal
 
     msbuild Integration\Tests\Tests.csproj /target:Restore
 test:
@@ -13,7 +14,7 @@ test:
 artifacts:
 - path: nugets\*.nupkg
 
-install:
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+#install:
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 on_finish:
   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
